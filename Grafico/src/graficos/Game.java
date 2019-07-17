@@ -2,7 +2,11 @@
 package graficos;
 
 import java.awt.Canvas;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
 import javax.swing.JFrame;
 
 
@@ -15,10 +19,22 @@ public class Game extends Canvas implements Runnable{
     private final int HEIGHT = 120;
     private final int SCALE = 3;
     
+    private BufferedImage image;
+    
+    
+   
+    
     
     
     public Game (){
         setPreferredSize(new Dimension(WIDTH*SCALE, HEIGHT*SCALE));
+        initFrame();
+        image = new BufferedImage(WIDTH,HEIGHT, BufferedImage.TYPE_INT_RGB);
+        
+    }
+    
+     public void initFrame(){
+        
         frame = new JFrame("Game#1");
         frame.add(this);
         //nao poder mudar as dimensões 
@@ -29,6 +45,7 @@ public class Game extends Canvas implements Runnable{
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         //executou apareceu
         frame.setVisible(true);
+        
     }
     
     public synchronized void start (){
@@ -53,12 +70,23 @@ public class Game extends Canvas implements Runnable{
         
     }
     public void render(){
-        
+        BufferStrategy bs = this.getBufferStrategy();
+        if(bs == null){
+            this.createBufferStrategy(3);
+            return;
+        }
+        Graphics g = image.getGraphics();
+        //cor do backgroud
+        g.setColor(new Color(30,30,30));
+        g.fillRect(0, 0, WIDTH, HEIGHT);
+        g = bs.getDrawGraphics();
+        //preenchendo o background
+        g.drawImage(image, 0, 0, WIDTH*SCALE, HEIGHT*SCALE, null);
+        bs.show();
     }
     
     
     public void run(){
-        
         //loop avançado para 60 frames por segundo
         long lastTime = System.nanoTime();
         double amountOfTicks = 60.0;
