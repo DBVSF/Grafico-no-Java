@@ -9,6 +9,8 @@ import javax.swing.JFrame;
 public class Game extends Canvas implements Runnable{
 
     public static JFrame frame;
+    private Thread thread;
+    private boolean isRunning = true;
     private final int WIDTH = 160;
     private final int HEIGHT = 120;
     private final int SCALE = 3;
@@ -29,13 +31,51 @@ public class Game extends Canvas implements Runnable{
         frame.setVisible(true);
     }
     
-    
-    public static void main(String[] args) {
-        Game game = new Game();
+    public synchronized void start (){
+        
+        thread = new Thread(this);
+        thread.start();
+        isRunning = true;
+        
+    }
+        
+    public synchronized void stop (){
         
     }
     
+    public static void main(String[] args) {
+        Game game = new Game();
+        game.start();
+        
+    }
+    
+    public void tick(){
+        
+    }
+    public void render(){
+        
+    }
+    
+    
     public void run(){
+        
+        //loop avançado para 60 frames por segundo
+        long lastTime = System.nanoTime();
+        double amountOfTicks = 60.0;
+        double ns = 1000000000 / amountOfTicks;
+        double delta = 0;
+        
+        while(isRunning){
+            
+            long now = System.nanoTime();
+            delta+= (now - lastTime) / ns;
+            
+            if (delta >= 1) {
+                tick();
+                render();
+            }
+            
+        }
         
     }
     
